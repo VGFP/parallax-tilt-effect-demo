@@ -5,6 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Starry Background with Rotation</title>
     <style>
+      @media only screen and (orientation: landscape) {
+        #background {
+          width: 100vh;
+          height: 100vw;
+          transform: translate(-50%, -50%);
+        }
+      }
+
       body {
         font-family: Arial, sans-serif;
         margin: 0;
@@ -71,7 +79,7 @@
     <div id="background"></div>
     <div id="content">
       <h1 style="color: white; text-align: center">Your Static Text Here</h1>
-      <p>Star fix</p>
+      <p style="color: white; text-align: center">Star fix</p>
     </div>
     <!-- Modal for permission request -->
     <div id="permissionModal" style="display: none">
@@ -108,7 +116,7 @@
         star.style.height = `${size}px`;
 
         // Spherical coordinates for placing stars around the viewer
-        const radius = 1200; // Adjust for how far you want the stars to be
+        const radius = 1500; // Adjust for how far you want the stars to be
         const theta = 2 * Math.PI * Math.random(); // Random value between 0 and 2*pi
         const phi = Math.acos(2 * Math.random() - 1); // Random value between 0 and pi
 
