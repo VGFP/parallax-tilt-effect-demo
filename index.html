@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Starry Background with Rotation</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        overflow: hidden;
+        height: 100vh;
+        perspective: 1000px;
+        background-color: black;
+      }
+
+      #background {
+        width: 150%;
+        height: 150%;
+        position: absolute;
+        top: -25%;
+        left: -25%;
+        transform-style: preserve-3d;
+      }
+
+      .stars {
+        position: absolute;
+        background: white;
+        border-radius: 50%;
+        animation: flicker linear infinite;
+      }
+
+      @keyframes flicker {
+        0% {
+          opacity: 0.9;
+        }
+
+        50% {
+          opacity: 1;
+        }
+
+        100% {
+          opacity: 0.9;
+        }
+      }
+
+      #content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1;
+      }
+
+      #permissionModal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
+        display: flex;
+        align-items: center;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="background"></div>
+    <div id="content">
+      <h1 style="color: white; text-align: center">Your Static Text Here</h1>
+    </div>
+    <!-- Modal for permission request -->
+    <div id="permissionModal" style="display: none">
+      <div
+        style="
+          background-color: white;
+          padding: 20px;
+          border-radius: 10px;
+          width: 80%;
+          max-width: 300px;
+          margin: 100px auto;
+          position: relative;
+        "
+      >
+        <p>
+          We need permission to access your device's orientation to enable the
+          rotation effect. Click "Allow" to proceed.
+        </p>
+        <button onclick="requestPermission()">Allow</button>
+        <button onclick="closeModal()">Deny</button>
+      </div>
+    </div>
+
+    <script>
+      const background = document.getElementById("background");
+      const numberOfStars = 1000;
+
+      for (let i = 0; i < numberOfStars; i++) {
+        const star = document.createElement("div");
+        star.classList.add("stars");
+
+        star.style.left = `${Math.random() * 150}vw`;
+        star.style.top = `${Math.random() * 150}vh`;
+
+        const size = Math.random() * 3; // Adjust max size if needed
+        star.style.width = `${size}px`;
+        star.style.height = `${size}px`;
+
+        background.appendChild(star);
+      }
+
+      function handleOrientation(event) {
+        const beta = event.beta; // X axis
+        const gamma = event.gamma; // Y axis
+
+        const rotateX = beta * -1;
+        const rotateY = gamma;
+
+        background.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+      }
+
+      function requestPermission() {
+        if (typeof DeviceOrientationEvent.requestPermission === "function") {
+          DeviceOrientationEvent.requestPermission()
+            .then((permissionState) => {
+              if (permissionState === "granted") {
+                window.addEventListener("deviceorientation", handleOrientation);
+                closeModal();
+              } else {
+                alert("Permission not granted.");
+                closeModal();
+              }
+            })
+            .catch((error) => {
+              alert("Error: " + error);
+              closeModal();
+            });
+        } else {
+          window.addEventListener("deviceorientation", handleOrientation);
+          closeModal();
+        }
+      }
+
+      function showModal() {
+        document.getElementById("permissionModal").style.display = "flex";
+        document.getElementById("content").style.display = "none"; // Hide the content div
+      }
+
+      function closeModal() {
+        document.getElementById("permissionModal").style.display = "none";
+        document.getElementById("content").style.display = "block"; // Show the content div
+      }
+
+      // Show the modal on page load
+      window.onload = showModal;
+    </script>
+  </body>
+</html>
