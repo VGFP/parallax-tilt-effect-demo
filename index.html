@@ -13,6 +13,17 @@
         }
       }
 
+      #permissionModal,
+      #content {
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out; /* This will handle the fade in/out */
+      }
+
+      #content.fade-in,
+      #permissionModal.fade-in {
+        opacity: 1;
+      }
+
       body {
         font-family: Arial, sans-serif;
         margin: 0;
@@ -77,9 +88,9 @@
 
   <body>
     <div id="background"></div>
-    <div id="content">
+    <div id="content" style="display: flex; flex-direction: column">
       <h1 style="color: white; text-align: center">Your Static Text Here</h1>
-      <p style="color: white; text-align: center">Star fix</p>
+      <h2 style="color: white; text-align: center">Star fix</h2>
     </div>
     <!-- Modal for permission request -->
     <div id="permissionModal" style="display: none">
@@ -162,17 +173,31 @@
       }
 
       function showModal() {
-        document.getElementById("permissionModal").style.display = "flex";
-        document.getElementById("content").style.display = "none"; // Hide the content div
+        const permissionModal = document.getElementById("permissionModal");
+        const content = document.getElementById("content");
+
+        permissionModal.classList.add("fade-in");
+        permissionModal.style.display = "flex";
+
+        content.classList.remove("fade-in");
       }
 
       function closeModal() {
-        document.getElementById("permissionModal").style.display = "none";
-        document.getElementById("content").style.display = "block"; // Show the content div
+        const permissionModal = document.getElementById("permissionModal");
+        const content = document.getElementById("content");
+
+        permissionModal.classList.remove("fade-in");
+        setTimeout(() => {
+          permissionModal.style.display = "none";
+        }, 300); // This timeout should match the CSS transition duration
+
+        content.classList.add("fade-in");
       }
 
-      // Show the modal on page load
-      window.onload = showModal;
+      // When the page loads, show the modal after a slight delay for a smooth transition
+      window.onload = () => {
+        setTimeout(showModal, 100);
+      };
     </script>
   </body>
 </html>
