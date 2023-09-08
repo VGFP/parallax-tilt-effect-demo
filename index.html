@@ -28,6 +28,7 @@
         background: white;
         border-radius: 50%;
         animation: flicker linear infinite;
+        transform-style: preserve-3d;
       }
 
       @keyframes flicker {
@@ -100,12 +101,18 @@
         const star = document.createElement("div");
         star.classList.add("stars");
 
-        star.style.left = `${Math.random() * 150}vw`;
-        star.style.top = `${Math.random() * 150}vh`;
+        // Random 3D position inside a cube
+        star.style.left = `${Math.random() * 100}vw`;
+        star.style.top = `${Math.random() * 100}vh`;
+        star.style.zIndex = Math.floor(Math.random() * 3) - 1; // random zIndex for depth
 
         const size = Math.random() * 3; // Adjust max size if needed
         star.style.width = `${size}px`;
         star.style.height = `${size}px`;
+
+        // Now add the 3D translation to the stars
+        const depthValue = (Math.random() - 0.5) * 1000; // random depth between -500 and 500
+        star.style.transform = `translateZ(${depthValue}px)`;
 
         background.appendChild(star);
       }
