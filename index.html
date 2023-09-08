@@ -15,12 +15,13 @@
       }
 
       #background {
-        width: 150%;
-        height: 150%;
+        width: 100vw;
+        height: 100vh;
         position: absolute;
-        top: -25%;
-        left: -25%;
+        top: 50%;
+        left: 50%;
         transform-style: preserve-3d;
+        transform: translate(-50%, -50%);
       }
 
       .stars {
@@ -126,7 +127,7 @@
         const rotateX = beta * -1;
         const rotateY = gamma;
 
-        background.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        background.style.transform = `translate(-50%, -50%) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
       }
 
       function requestPermission() {
