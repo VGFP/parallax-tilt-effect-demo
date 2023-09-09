@@ -1,10 +1,11 @@
 <!DOCTYPE html>
+
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Starry Background with Rotation</title>
-    <style>
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Starry Background with Rotation</title>
+<style>
       @media only screen and (orientation: landscape) {
         #background {
           width: 100vh;
@@ -94,22 +95,29 @@
         display: flex;
         align-items: center;
       }
-    </style>
-  </head>
+    
+#content {
+    perspective: 500px;
+}
 
-  <body>
-    <div id="background"></div>
-    <div id="content" style="display: flex; flex-direction: column">
-      <div class="scroll-text">
-        <h1 style="color: white; text-align: center">Your Static Text Here</h1>
-        <h2 style="color: white; text-align: center">Star fix</h2>
-        <p style="color: white; text-align: center;">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Deleniti nulla nemo quasi autem aliquam eius saepe, perspiciatis numquam nihil illum soluta accusamus consequatur possimus doloremque repellat nostrum non. Dolore, eveniet.</p>
-      </div>
-    </div>
-    <!-- Modal for permission request -->
-    <div id="permissionModal" style="display: none">
-      <div
-        style="
+.scroll-text {
+    transform-origin: 50% 50%;
+    transition: transform 0.2s;
+}
+</style>
+</head>
+<body>
+<div id="background"></div>
+<div id="content" style="display: flex; flex-direction: column">
+<div class="scroll-text">
+<h1 style="color: white; text-align: center">Your Static Text Here</h1>
+<h2 style="color: white; text-align: center">Star fix</h2>
+<p style="color: white; text-align: center;">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Deleniti nulla nemo quasi autem aliquam eius saepe, perspiciatis numquam nihil illum soluta accusamus consequatur possimus doloremque repellat nostrum non. Dolore, eveniet.</p>
+</div>
+</div>
+<!-- Modal for permission request -->
+<div id="permissionModal" style="display: none">
+<div style="
           background-color: white;
           padding: 20px;
           border-radius: 10px;
@@ -117,18 +125,16 @@
           max-width: 300px;
           margin: 100px auto;
           position: relative;
-        "
-      >
-        <p>
+        ">
+<p>
           We need permission to access your device's orientation to enable the
           rotation effect. Click "Allow" to proceed.
         </p>
-        <button onclick="requestPermission()">Allow</button>
-        <button onclick="closeModal()">Deny</button>
-      </div>
-    </div>
-
-    <script>
+<button onclick="requestPermission()">Allow</button>
+<button onclick="closeModal()">Deny</button>
+</div>
+</div>
+<script>
       const background = document.getElementById("background");
       const numberOfStars = 2500; // increased the number for better density
 
@@ -232,6 +238,14 @@
             ".scroll-text"
           ).style.transform = `translateY(${translateY}px) scale(${scaleFactor})`;
         });
-    </script>
-  </body>
+    
+document.getElementById("content").addEventListener("scroll", function (e) {
+    const scrollY = e.target.scrollTop;
+    const text = e.target.querySelector(".scroll-text");
+    
+    const scaleFactor = 1 + scrollY / 1000; // This factor can be adjusted for more/less effect
+    text.style.transform = `scale(${scaleFactor})`;
+});
+</script>
+</body>
 </html>
