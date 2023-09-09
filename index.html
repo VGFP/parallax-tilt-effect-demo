@@ -17,6 +17,17 @@
       #content {
         opacity: 0;
         transition: opacity 0.3s ease-in-out; /* This will handle the fade in/out */
+        perspective: 800px;
+        overflow-y: auto;
+        height: 100vh;
+        transform-style: preserve-3d;
+      }
+
+      .scroll-text {
+        transform-origin: 50% 100%;
+        transform: translateZ(0);
+        font-size: 1.5em;
+        line-height: 1.6em;
       }
 
       #content.fade-in,
@@ -89,8 +100,11 @@
   <body>
     <div id="background"></div>
     <div id="content" style="display: flex; flex-direction: column">
-      <h1 style="color: white; text-align: center">Your Static Text Here</h1>
-      <h2 style="color: white; text-align: center">Star fix</h2>
+      <div class="scroll-text">
+        <h1 style="color: white; text-align: center">Your Static Text Here</h1>
+        <h2 style="color: white; text-align: center">Star fix</h2>
+        <p style="color: white; text-align: center;">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Deleniti nulla nemo quasi autem aliquam eius saepe, perspiciatis numquam nihil illum soluta accusamus consequatur possimus doloremque repellat nostrum non. Dolore, eveniet.</p>
+      </div>
     </div>
     <!-- Modal for permission request -->
     <div id="permissionModal" style="display: none">
@@ -144,31 +158,38 @@
         const beta = event.beta; // X axis
         const gamma = event.gamma; // Y axis
 
-        const rotateX = beta * -1;
-        const rotateY = gamma;
+        const rotateX = (beta * -1) / 10; // Divide by 10 to make it less sensitive
+        const rotateY = gamma / 10; // Divide by 10 to make it less sensitive
 
         background.style.transform = `translate(-50%, -50%) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
       }
 
       function requestPermission() {
-        if (typeof DeviceOrientationEvent.requestPermission === "function") {
-          DeviceOrientationEvent.requestPermission()
-            .then((permissionState) => {
-              if (permissionState === "granted") {
-                window.addEventListener("deviceorientation", handleOrientation);
+        if ("DeviceOrientationEvent" in window) {
+          if (typeof DeviceOrientationEvent.requestPermission === "function") {
+            DeviceOrientationEvent.requestPermission()
+              .then((permissionState) => {
+                if (permissionState === "granted") {
+                  window.addEventListener(
+                    "deviceorientation",
+                    handleOrientation
+                  );
+                  closeModal();
+                } else {
+                  alert("Permission not granted.");
+                  closeModal();
+                }
+              })
+              .catch((error) => {
+                alert("Error: " + error);
                 closeModal();
-              } else {
-                alert("Permission not granted.");
-                closeModal();
-              }
-            })
-            .catch((error) => {
-              alert("Error: " + error);
-              closeModal();
-            });
+              });
+          } else {
+            window.addEventListener("deviceorientation", handleOrientation);
+            closeModal();
+          }
         } else {
-          window.addEventListener("deviceorientation", handleOrientation);
-          closeModal();
+          console.warn("Device orientation not supported");
         }
       }
 
@@ -198,6 +219,19 @@
       window.onload = () => {
         setTimeout(showModal, 100);
       };
+
+      document
+        .getElementById("content")
+        .addEventListener("scroll", function (e) {
+          const scrollY = e.target.scrollTop;
+          const scaleFactor =
+            1 - scrollY / (e.target.scrollHeight - e.target.clientHeight);
+          const translateY = -scrollY;
+
+          e.target.querySelector(
+            ".scroll-text"
+          ).style.transform = `translateY(${translateY}px) scale(${scaleFactor})`;
+        });
     </script>
   </body>
 </html>
